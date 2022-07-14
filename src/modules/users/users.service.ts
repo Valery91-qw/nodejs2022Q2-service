@@ -31,7 +31,12 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<any> {
+    const existingUser = this.users.find((user) => user.id === id);
+    if (!existingUser) return existingUser;
+    else {
+      this.users = this.users.filter((user) => user.id !== existingUser.id);
+      return existingUser;
+    }
   }
 }

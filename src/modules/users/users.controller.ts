@@ -43,7 +43,9 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const user = await this.usersService.remove(id);
+    if (!user) throw new NotFoundException(`user with ${id} not found`);
+    else return;
   }
 }
