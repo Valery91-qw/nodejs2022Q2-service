@@ -1,26 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { IArtist } from './model/artist.model';
+import { Artist } from './helpers/Artist';
 
 @Injectable()
 export class ArtistsService {
-  create(createArtistDto: CreateArtistDto) {
-    return 'This action adds a new artist';
+  private artists: Array<IArtist> = [];
+
+  async create(createArtistDto: CreateArtistDto): Promise<IArtist> {
+    const newArtist = new Artist(createArtistDto.name, createArtistDto.grammy);
+    this.artists.push(newArtist);
+    return newArtist;
   }
 
-  findAll() {
-    return `This action returns all artists`;
+  async findAll(): Promise<Array<IArtist>> {
+    return this.artists;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} artist`;
+  async findOne(id: string): Promise<IArtist> {
+    return this.artists.find((artist) => artist.id === id);
   }
 
-  update(id: number, updateArtistDto: UpdateArtistDto) {
-    return `This action updates a #${id} artist`;
+  async update(id: string, updateArtistDto: UpdateArtistDto): Promise<IArtist> {
+    const artist = this.artists.find((artist) => artist.id === id);
+    if (!artist) return artist;
+    else {
+      artist.updateArtistInfo(updateArtistDto.name, updateArtistDto.grammy);
+      return artist;
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} artist`;
+  async remove(id: string): Promise<IArtist> {
+    const artist = this.artists.find((artist) => artist.id === id);
+    if (!artist) return artist;
+    else {
+      this.artists = this.artists.filter((artist) => artist.id !== id);
+      return artist;
+    }
   }
 }

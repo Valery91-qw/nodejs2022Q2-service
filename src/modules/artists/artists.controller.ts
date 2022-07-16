@@ -1,46 +1,57 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
-  Put,
+  Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
+  Param,
   ParseUUIDPipe,
+  Post,
+  Put,
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { IArtist } from './model/artist.model';
 
-@Controller('artists')
+@Controller('artist')
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
   @Post()
-  create(@Body() createArtistDto: CreateArtistDto) {
-    return this.artistsService.create(createArtistDto);
+  async create(@Body() createArtistDto: CreateArtistDto): Promise<IArtist> {
+    return await this.artistsService.create(createArtistDto);
   }
 
   @Get()
-  findAll() {
-    return this.artistsService.findAll();
+  async findAll() {
+    return await this.artistsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.artistsService.findOne(+id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<IArtist> {
+    const artist = await this.artistsService.findOne(id);
+    if (!artist) throw new NotFoundException(`Artist not found`);
+    else return artist;
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
-  ) {
-    return this.artistsService.update(+id, updateArtistDto);
+  ): Promise<IArtist> {
+    const artist = await this.artistsService.update(id, updateArtistDto);
+    if (!artist) throw new NotFoundException(`Artist not found`);
+    return artist;
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.artistsService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    const artist = await this.artistsService.remove(id);
+    if (!artist) throw new NotFoundException(`Artist not found`);
+    return;
   }
 }
