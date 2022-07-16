@@ -38,7 +38,7 @@ export class UsersService {
     }
   }
 
-  public async remove(id: string): Promise<any> {
+  public async remove(id: string): Promise<IUser> {
     const existingUser = this.users.find((user) => user.id === id);
     if (!existingUser) return existingUser;
     else {
