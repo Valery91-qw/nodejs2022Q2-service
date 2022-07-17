@@ -61,7 +61,7 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     const user = await this.usersService.remove(id);
-    if (!user) throw new NotFoundException(`user with ${id} not found`);
+    if (!user) throw new NotFoundException(`user this id not found`);
     else return;
   }
 }

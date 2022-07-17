@@ -20,6 +20,7 @@ export class UsersService {
 
   public async findOne(id: string): Promise<ResponseUserType> {
     const user = this.users.find((user) => user.id === id);
+    if (!user) return user;
     return user.getUserInfo();
   }
 
@@ -39,9 +40,7 @@ export class UsersService {
   public async remove(id: string): Promise<ResponseUserType> {
     const existingUser = this.users.find((user) => user.id === id);
     if (!existingUser) return existingUser;
-    else {
-      this.users = this.users.filter((user) => user.id !== existingUser.id);
-      return existingUser.getUserInfo();
-    }
+    this.users = this.users.filter((user) => user.id !== existingUser.id);
+    return existingUser.getUserInfo();
   }
 }
