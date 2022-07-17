@@ -12,6 +12,7 @@ config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const file = readFileSync(join('.', 'doc', 'api.yaml'), 'utf-8');
   const document = parse(file);

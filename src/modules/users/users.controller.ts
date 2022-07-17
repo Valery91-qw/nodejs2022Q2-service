@@ -29,12 +29,14 @@ export class UsersController {
   }
 
   @Get()
-  async findAll(): Promise<Array<IUser>> {
+  async findAll(): Promise<Array<ResponseUserType>> {
     return await this.usersService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<IUser> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ResponseUserType> {
     const user = await this.usersService.findOne(id);
     if (!user) throw new NotFoundException(`user with this id not found`);
     else return user;

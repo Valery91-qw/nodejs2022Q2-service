@@ -18,7 +18,7 @@ export class UsersService {
     return this.users.map((el) => el.getUserInfo());
   }
 
-  public async findOne(id: string): Promise<IUser> {
+  public async findOne(id: string): Promise<ResponseUserType> {
     const user = this.users.find((user) => user.id === id);
     return user.getUserInfo();
   }
