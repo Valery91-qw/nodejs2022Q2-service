@@ -3,40 +3,55 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
+  NotFoundException,
+  HttpCode,
+  HttpStatus,
+  Put,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { ITrack } from './model/track.model';
 
-@Controller('tracks')
+@Controller('track')
 export class TracksController {
   constructor(private readonly tracksService: TracksService) {}
 
   @Post()
-  create(@Body() createTrackDto: CreateTrackDto) {
-    return this.tracksService.create(createTrackDto);
+  async create(@Body() createTrackDto: CreateTrackDto): Promise<ITrack> {
+    return await this.tracksService.create(createTrackDto);
   }
 
   @Get()
-  findAll() {
-    return this.tracksService.findAll();
+  async findAll(): Promise<Array<ITrack>> {
+    return await this.tracksService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tracksService.findOne(+id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<ITrack> {
+    const track = await this.tracksService.findOne(id);
+    if (!track) throw new NotFoundException(`user with this id not found`);
+    return track;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
-    return this.tracksService.update(+id, updateTrackDto);
+  @Put(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateTrackDto: UpdateTrackDto,
+  ): Promise<ITrack> {
+    const track = await this.tracksService.update(id, updateTrackDto);
+    if (!track) throw new NotFoundException(`user with this id not found`);
+    return track;
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tracksService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    const track = await this.tracksService.remove(id);
+    if (!track) throw new NotFoundException(`user with this id not found`);
+    return;
   }
 }

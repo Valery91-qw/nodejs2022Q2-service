@@ -4,6 +4,7 @@ export class CreateArtistDto {
   @IsNotEmpty()
   @IsString()
   readonly name: string;
+  @IsNotEmpty()
   @IsBoolean()
   readonly grammy: boolean;
 }

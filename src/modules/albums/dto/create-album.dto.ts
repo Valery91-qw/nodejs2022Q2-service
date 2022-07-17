@@ -9,5 +9,5 @@ export class CreateAlbumDto {
   readonly year: number;
   @IsString()
   @IsOptional()
-  readonly artistId: string | null;
+  readonly artistId: string;
 }

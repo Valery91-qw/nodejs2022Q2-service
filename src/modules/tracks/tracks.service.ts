@@ -1,26 +1,48 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { ITrack } from './model/track.model';
+import { Track } from './helpers/Track';
 
 @Injectable()
 export class TracksService {
-  create(createTrackDto: CreateTrackDto) {
-    return 'This action adds a new track';
+  tracks: Array<ITrack> = [];
+
+  async create(createTrackDto: CreateTrackDto): Promise<ITrack> {
+    const newTrack = new Track(
+      createTrackDto.name,
+      createTrackDto.duration,
+      createTrackDto.artistId,
+      createTrackDto.albumId,
+    );
+    this.tracks.push(newTrack);
+    return newTrack;
   }
 
-  findAll() {
-    return `This action returns all tracks`;
+  async findAll(): Promise<Array<ITrack>> {
+    return this.tracks;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} track`;
+  async findOne(id: string): Promise<ITrack> {
+    return this.tracks.find((track) => track.id === id);
   }
 
-  update(id: number, updateTrackDto: UpdateTrackDto) {
-    return `This action updates a #${id} track`;
+  async update(id: string, updateTrackDto: UpdateTrackDto): Promise<ITrack> {
+    const track = this.tracks.find((track) => track.id === id);
+    if (!track) return;
+    track.updateTrack(
+      updateTrackDto.name,
+      updateTrackDto.duration,
+      updateTrackDto.artistId,
+      updateTrackDto.albumId,
+    );
+    return track;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} track`;
+  async remove(id: string): Promise<ITrack> {
+    const track = this.tracks.find((track) => track.id === id);
+    if (!track) return;
+    this.tracks = this.tracks.filter((track) => track.id !== id);
+    return track;
   }
 }

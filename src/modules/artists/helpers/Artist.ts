@@ -14,6 +14,7 @@ export class Artist implements IArtist {
 
   updateArtistInfo(name: string, grammy: boolean): void {
     this.name = name;
+    if (this.grammy) return;
     this.grammy = grammy;
     return;
   }
