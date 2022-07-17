@@ -7,7 +7,7 @@ import { readFileSync } from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const file = readFileSync('./doc/api.yaml', 'utf-8');
   const document = parse(file);
   SwaggerModule.setup('doc', app, document);

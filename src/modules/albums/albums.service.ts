@@ -1,26 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { IAlbum } from './model/album.model';
+import { Album } from './helpers/Album';
 
 @Injectable()
 export class AlbumsService {
-  create(createAlbumDto: CreateAlbumDto) {
-    return 'This action adds a new album';
+  albums: Array<IAlbum> = [];
+
+  async create(createAlbumDto: CreateAlbumDto): Promise<IAlbum> {
+    const newAlbum = new Album(
+      createAlbumDto.name,
+      createAlbumDto.year,
+      createAlbumDto.artistId,
+    );
+    this.albums.push(newAlbum);
+    return newAlbum;
   }
 
-  findAll() {
-    return `This action returns all albums`;
+  async findAll(): Promise<Array<IAlbum>> {
+    return this.albums;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} album`;
+  async findOne(id: string): Promise<IAlbum> {
+    return this.albums.find((album) => album.id === id);
   }
 
-  update(id: number, updateAlbumDto: UpdateAlbumDto) {
-    return `This action updates a #${id} album`;
+  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<IAlbum> {
+    const album = this.albums.find((album) => album.id === id);
+    if (!album) return;
+    album.updateAlbum(
+      updateAlbumDto.name,
+      updateAlbumDto.year,
+      updateAlbumDto.artistId,
+    );
+    return album;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} album`;
+  async remove(id: string): Promise<IAlbum> {
+    const album = this.albums.find((album) => album.id === id);
+    if (!album) return;
+    this.albums = this.albums.filter((album) => album.id !== id);
+    return album;
   }
 }

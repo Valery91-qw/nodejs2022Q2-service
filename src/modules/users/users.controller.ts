@@ -36,7 +36,7 @@ export class UsersController {
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<IUser> {
     const user = await this.usersService.findOne(id);
-    if (!user) throw new NotFoundException(`user with ${id} not found`);
+    if (!user) throw new NotFoundException(`user with this id not found`);
     else return user;
   }
 
@@ -47,7 +47,7 @@ export class UsersController {
   ): Promise<ResponseUserType | boolean> {
     const user = await this.usersService.update(id, updateUserDto);
     if (user === undefined) {
-      throw new NotFoundException(`user with ${id} not found`);
+      throw new NotFoundException(`user with this id not found`);
     }
     if (user === false) {
       throw new ForbiddenException('old password is incorrect');

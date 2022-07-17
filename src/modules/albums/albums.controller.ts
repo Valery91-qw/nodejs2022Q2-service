@@ -7,40 +7,51 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  NotFoundException,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { IAlbum } from './model/album.model';
 
-@Controller('albums')
+@Controller('album')
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
   @Post()
-  create(@Body() createAlbumDto: CreateAlbumDto) {
-    return this.albumsService.create(createAlbumDto);
+  async create(@Body() createAlbumDto: CreateAlbumDto): Promise<IAlbum> {
+    return await this.albumsService.create(createAlbumDto);
   }
 
   @Get()
-  findAll() {
-    return this.albumsService.findAll();
+  async findAll(): Promise<Array<IAlbum>> {
+    return await this.albumsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.albumsService.findOne(+id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<IAlbum> {
+    const album = await this.albumsService.findOne(id);
+    if (!album) throw new NotFoundException(`Album with this id not found`);
+    else return album;
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
-  ) {
-    return this.albumsService.update(+id, updateAlbumDto);
+  ): Promise<IAlbum> {
+    const album = await this.albumsService.update(id, updateAlbumDto);
+    if (!album) throw new NotFoundException(`Album with this id not found`);
+    else return album;
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.albumsService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    const album = await this.albumsService.remove(id);
+    if (!album) throw new NotFoundException(`Album with this id not found`);
+    else return;
   }
 }
