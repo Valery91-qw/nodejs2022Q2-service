@@ -2,44 +2,54 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
 
-@Controller('favorites')
+@Controller('favs')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
-  @Post()
-  create(@Body() createFavoriteDto: CreateFavoriteDto) {
-    return this.favoritesService.create(createFavoriteDto);
-  }
-
   @Get()
-  findAll() {
-    return this.favoritesService.findAll();
+  async findAll() {
+    return await this.favoritesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.favoritesService.findOne(+id);
+  @Post('/track/:id')
+  async createTrack(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    await this.favoritesService.createFavTrack(id);
+    return;
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateFavoriteDto: UpdateFavoriteDto,
-  ) {
-    return this.favoritesService.update(+id, updateFavoriteDto);
+  @Post('/album/:id')
+  async createAlbum(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return await this.favoritesService.createFavAlbum(id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.favoritesService.remove(+id);
+  @Post('/artist/:id')
+  async createArtist(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return await this.favoritesService.createFavArtist(id);
+  }
+
+  @Delete('/track/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeTrack(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return await this.favoritesService.removeTrack(id);
+  }
+
+  @Delete('/album/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeAlbum(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return this.favoritesService.removeAlbum(id);
+  }
+
+  @Delete('/artist/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeArtist(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return await this.favoritesService.removeArtist(id);
   }
 }
