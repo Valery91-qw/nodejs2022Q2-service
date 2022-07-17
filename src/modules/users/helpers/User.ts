@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { IUser } from '../models/user.model';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 export class User implements IUser {
   readonly createdAt: number;
@@ -18,17 +19,17 @@ export class User implements IUser {
     this.updatedAt = this.createdAt;
   }
 
-  public updatePassword(oldPassword: string, newPassword: string): boolean {
-    if (this.password !== oldPassword) return false;
+  static updatePassword(user: IUser, updateUserDto: UpdateUserDto): boolean {
+    if (user.password !== updateUserDto.oldPassword) return false;
     else {
-      this.password = newPassword;
-      this.version++;
-      this.updatedAt = Date.now();
+      user.password = updateUserDto.newPassword;
+      user.version++;
+      user.updatedAt = Date.now();
       return true;
     }
   }
 
-  public getUserInfo() {
+  getUserInfo() {
     return {
       id: this.id,
       login: this.login,

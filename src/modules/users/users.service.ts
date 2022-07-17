@@ -14,12 +14,13 @@ export class UsersService {
     return newUser.getUserInfo();
   }
 
-  public async findAll(): Promise<Array<IUser>> {
-    return this.users;
+  public async findAll(): Promise<Array<ResponseUserType>> {
+    return this.users.map((el) => el.getUserInfo());
   }
 
   public async findOne(id: string): Promise<IUser> {
-    return this.users.find((user) => user.id === id);
+    const user = this.users.find((user) => user.id === id);
+    return user.getUserInfo();
   }
 
   public async update(
@@ -29,21 +30,18 @@ export class UsersService {
     const user = this.users.find((user) => user.id === id);
     if (!user) return user;
     else {
-      const isUpdate = user.updatePassword(
-        updateUserDto.oldPassword,
-        updateUserDto.newPassword,
-      );
+      const isUpdate = User.updatePassword(user, updateUserDto);
       if (!isUpdate) return isUpdate;
       else return user.getUserInfo();
     }
   }
 
-  public async remove(id: string): Promise<IUser> {
+  public async remove(id: string): Promise<ResponseUserType> {
     const existingUser = this.users.find((user) => user.id === id);
     if (!existingUser) return existingUser;
     else {
       this.users = this.users.filter((user) => user.id !== existingUser.id);
-      return existingUser;
+      return existingUser.getUserInfo();
     }
   }
 }

@@ -1,5 +1,6 @@
 import { IArtist } from '../model/artist.model';
 import { randomUUID } from 'crypto';
+import { UpdateArtistDto } from '../dto/update-artist.dto';
 
 export class Artist implements IArtist {
   id: string;
@@ -12,10 +13,13 @@ export class Artist implements IArtist {
     this.grammy = grammy;
   }
 
-  updateArtistInfo(name: string, grammy: boolean): void {
-    this.name = name;
-    if (this.grammy) return;
-    this.grammy = grammy;
-    return;
+  static updateArtistInfo(
+    artist: IArtist,
+    updateArtistDto: UpdateArtistDto,
+  ): IArtist {
+    artist.name = updateArtistDto.name;
+    if (artist.grammy) return artist;
+    artist.grammy = updateArtistDto.grammy;
+    return artist;
   }
 }

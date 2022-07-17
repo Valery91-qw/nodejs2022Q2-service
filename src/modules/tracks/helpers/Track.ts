@@ -1,5 +1,6 @@
 import { ITrack } from '../model/track.model';
 import { randomUUID } from 'crypto';
+import { UpdateTrackDto } from '../dto/update-track.dto';
 
 export class Track implements ITrack {
   id: string;
@@ -21,15 +22,11 @@ export class Track implements ITrack {
     this.albumId = albumId || null;
   }
 
-  updateTrack(
-    name: string,
-    duration: number,
-    artistId?: string,
-    albumId?: string,
-  ): void {
-    this.name = name;
-    this.duration = duration;
-    this.artistId = artistId || this.artistId;
-    this.albumId = albumId || this.albumId;
+  static updateTrack(track: ITrack, updateTrackDto: UpdateTrackDto): ITrack {
+    track.name = updateTrackDto.name;
+    track.duration = updateTrackDto.duration;
+    track.artistId = updateTrackDto.artistId || track.artistId;
+    track.albumId = updateTrackDto.albumId || track.albumId;
+    return track;
   }
 }

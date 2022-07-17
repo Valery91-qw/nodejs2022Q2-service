@@ -5,11 +5,7 @@ export interface IUser {
   version: number;
   createdAt: number;
   updatedAt: number;
-  updatePassword(oldPassword: string, newPassword: string): boolean;
   getUserInfo();
 }
 
-export type ResponseUserType = Omit<
-  IUser,
-  'password' | 'updatePassword' | 'getUserInfo'
->;
+export type ResponseUserType = Omit<IUser, 'password' | 'getUserInfo'>;

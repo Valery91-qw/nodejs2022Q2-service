@@ -29,12 +29,7 @@ export class AlbumsService {
   async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<IAlbum> {
     const album = this.albums.find((album) => album.id === id);
     if (!album) return;
-    album.updateAlbum(
-      updateAlbumDto.name,
-      updateAlbumDto.year,
-      updateAlbumDto.artistId,
-    );
-    return album;
+    return Album.updateAlbum(album, updateAlbumDto);
   }
 
   async remove(id: string): Promise<IAlbum> {

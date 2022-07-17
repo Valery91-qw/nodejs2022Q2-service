@@ -30,13 +30,7 @@ export class TracksService {
   async update(id: string, updateTrackDto: UpdateTrackDto): Promise<ITrack> {
     const track = this.tracks.find((track) => track.id === id);
     if (!track) return;
-    track.updateTrack(
-      updateTrackDto.name,
-      updateTrackDto.duration,
-      updateTrackDto.artistId,
-      updateTrackDto.albumId,
-    );
-    return track;
+    return Track.updateTrack(track, updateTrackDto);
   }
 
   async remove(id: string): Promise<ITrack> {

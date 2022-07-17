@@ -25,10 +25,7 @@ export class ArtistsService {
   async update(id: string, updateArtistDto: UpdateArtistDto): Promise<IArtist> {
     const artist = this.artists.find((artist) => artist.id === id);
     if (!artist) return artist;
-    else {
-      artist.updateArtistInfo(updateArtistDto.name, updateArtistDto.grammy);
-      return artist;
-    }
+    return Artist.updateArtistInfo(artist, updateArtistDto);
   }
 
   async remove(id: string): Promise<IArtist> {
