@@ -1,0 +1,26 @@
+version: '3'
+services:
+  backend:
+    container_name: nest-js
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+    restart: always
+  postgres:
+    container_name: postgres
+    image: postgres:13.3-alpine
+    environment:
+      PG_DATA: /var/lib/postgres/data
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgres/data
+    restart: always
+
+volumes:
+  pgdata:
