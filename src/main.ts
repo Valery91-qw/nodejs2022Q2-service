@@ -1,14 +1,10 @@
 import { parse } from 'yaml';
 import { readFileSync } from 'fs';
-import { config } from 'dotenv';
-import { env } from 'process';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { join } from 'path';
-
-config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +14,6 @@ async function bootstrap() {
   const document = parse(file);
   SwaggerModule.setup('doc', app, document);
 
-  await app.listen(env.PORT || 4000);
+  await app.listen(process.env.PORT || 4000);
 }
 bootstrap();

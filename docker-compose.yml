@@ -4,17 +4,23 @@ services:
     container_name: nest-js
     build:
       context: .
-      dockerfile: /docker/app/Dockerfile
+      dockerfile: ./docker/app/Dockerfile
+    env_file:
+      - .env.example
     ports:
       - "4000:4000"
+    depends_on:
+      - db
     restart: always
   db:
     container_name: postgres
     build:
-      dockerfile: /docker/db/Dockerfile
+      context: .
+      dockerfile: ./docker/db/Dockerfile
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+    env_file:
+      - .env.example
     ports:
       - "5432:5432"
     restart: always
-    environment:
-      POSTGRES_PASSWORD: password
-      PG_DATA: /var/lib/postgresql/data
