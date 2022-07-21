@@ -1,26 +1,20 @@
-version: '3'
+version: '3.9'
 services:
   backend:
     container_name: nest-js
     build:
       context: .
+      dockerfile: /docker/app/Dockerfile
     ports:
-      - "5000:5000"
-    volumes:
-      - .:/app
-    depends_on:
-      - postgres
+      - "4000:4000"
     restart: always
-  postgres:
+  db:
     container_name: postgres
-    image: postgres:13.3-alpine
-    environment:
-      PG_DATA: /var/lib/postgres/data
+    build:
+      dockerfile: /docker/db/Dockerfile
     ports:
       - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgres/data
     restart: always
-
-volumes:
-  pgdata:
+    environment:
+      POSTGRES_PASSWORD: password
+      PG_DATA: /var/lib/postgresql/data
