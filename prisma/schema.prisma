@@ -11,6 +11,7 @@ model Artist {
   id    String     @default(uuid()) @id
   name String
   grammy Boolean
+  tracks Track[]
 }
 
 model User {
@@ -20,4 +21,13 @@ model User {
   updatedAt Int
   createdAt Int
   version Int
+}
+
+model Track {
+  id    String      @default(uuid()) @id
+  name String
+  artist Artist?    @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  artistId String?
+  albumId String?
+  duration Int
 }

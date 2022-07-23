@@ -6,4 +6,4 @@ export default {
   userURL,
   userNotFoundMessage,
   incorrectBodyMessage,
-}
+};

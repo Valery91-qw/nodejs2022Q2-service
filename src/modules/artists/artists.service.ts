@@ -11,7 +11,7 @@ export class ArtistsService {
 
   async create(createArtistDto: CreateArtistDto): Promise<IArtist> {
     const newArtist = new Artist(createArtistDto.name, createArtistDto.grammy);
-    return this.prisma.artist.create({
+    return await this.prisma.artist.create({
       data: newArtist,
     });
   }
