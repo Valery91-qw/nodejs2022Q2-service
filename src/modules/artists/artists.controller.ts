@@ -15,8 +15,9 @@ import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { IArtist } from './model/artist.model';
+import constants from './constants/constants';
 
-@Controller('artist')
+@Controller(constants.artistsURL)
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
@@ -33,7 +34,7 @@ export class ArtistsController {
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<IArtist> {
     const artist = await this.artistsService.findOne(id);
-    if (!artist) throw new NotFoundException(`Artist not found`);
+    if (!artist) throw new NotFoundException(constants.notFoundMessage);
     else return artist;
   }
 
@@ -43,7 +44,7 @@ export class ArtistsController {
     @Body() updateArtistDto: UpdateArtistDto,
   ): Promise<IArtist> {
     const artist = await this.artistsService.update(id, updateArtistDto);
-    if (!artist) throw new NotFoundException(`Artist not found`);
+    if (!artist) throw new NotFoundException(constants.notFoundMessage);
     return artist;
   }
 
@@ -51,7 +52,7 @@ export class ArtistsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     const artist = await this.artistsService.remove(id);
-    if (!artist) throw new NotFoundException(`Artist not found`);
+    if (!artist) throw new NotFoundException(constants.notFoundMessage);
     return;
   }
 }

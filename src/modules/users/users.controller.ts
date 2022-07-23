@@ -16,8 +16,9 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserType } from './models/user.model';
+import constants from './constants/constants';
 
-@Controller('user')
+@Controller(constants.userURL)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -38,7 +39,7 @@ export class UsersController {
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ResponseUserType> {
     const user = await this.usersService.findOne(id);
-    if (!user) throw new NotFoundException(`user with this id not found`);
+    if (!user) throw new NotFoundException(constants.userNotFoundMessage);
     else return user;
   }
 
@@ -48,11 +49,11 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<ResponseUserType | boolean> {
     const user = await this.usersService.update(id, updateUserDto);
-    if (user === undefined) {
-      throw new NotFoundException(`user with this id not found`);
+    if (user === null || undefined) {
+      throw new NotFoundException(constants.userNotFoundMessage);
     }
     if (user === false) {
-      throw new ForbiddenException('old password is incorrect');
+      throw new ForbiddenException(constants.incorrectBodyMessage);
     }
     return user;
   }
@@ -61,7 +62,7 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     const user = await this.usersService.remove(id);
-    if (!user) throw new NotFoundException(`user this id not found`);
+    if (!user) throw new NotFoundException(constants.userNotFoundMessage);
     else return;
   }
 }

@@ -3,7 +3,7 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { IArtist } from './model/artist.model';
 import { PrismaService } from '../prisma/prisma.service';
-import { Artist } from './helpers/Artist';
+import { Artist } from './entities/Artist';
 
 @Injectable()
 export class ArtistsService {
@@ -17,7 +17,7 @@ export class ArtistsService {
   }
 
   async findAll(): Promise<Array<IArtist>> {
-    return this.prisma.artist.findMany();
+    return await this.prisma.artist.findMany();
   }
 
   async findOne(id: string): Promise<IArtist> {

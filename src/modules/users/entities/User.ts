@@ -3,11 +3,11 @@ import { IUser } from '../models/user.model';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
 export class User implements IUser {
-  readonly createdAt: number;
-  readonly id: string;
+  id: string;
   login: string;
   password: string;
   updatedAt: number;
+  createdAt: number;
   version: number;
 
   constructor(login: string, password: string) {
@@ -19,23 +19,26 @@ export class User implements IUser {
     this.updatedAt = this.createdAt;
   }
 
-  static updatePassword(user: IUser, updateUserDto: UpdateUserDto): boolean {
+  static updatePassword(
+    user: IUser,
+    updateUserDto: UpdateUserDto,
+  ): IUser | boolean {
     if (user.password !== updateUserDto.oldPassword) return false;
     else {
       user.password = updateUserDto.newPassword;
       user.version++;
       user.updatedAt = Date.now();
-      return true;
+      return user;
     }
   }
 
-  getUserInfo() {
+  static getUserInfo(user: IUser) {
     return {
-      id: this.id,
-      login: this.login,
-      version: this.version,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
+      id: user.id,
+      login: user.login,
+      version: user.version,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
   }
 }

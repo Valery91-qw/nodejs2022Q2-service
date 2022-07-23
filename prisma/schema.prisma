@@ -12,3 +12,12 @@ model Artist {
   name String
   grammy Boolean
 }
+
+model User {
+  id    String      @default(uuid()) @id
+  login String
+  password String
+  updatedAt Int
+  createdAt Int
+  version Int
+}

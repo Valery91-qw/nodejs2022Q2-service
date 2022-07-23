@@ -5,7 +5,6 @@ export interface IUser {
   version: number;
   createdAt: number;
   updatedAt: number;
-  getUserInfo();
 }
 
 export type ResponseUserType = Omit<IUser, 'password' | 'getUserInfo'>;
