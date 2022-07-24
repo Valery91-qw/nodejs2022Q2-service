@@ -1,11 +1,5 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
-import { TracksService } from '../tracks/tracks.service';
-import { AlbumsService } from '../albums/albums.service';
-import { ArtistsService } from '../artists/artists.service';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class FavoritesService {
@@ -19,70 +13,71 @@ export class FavoritesService {
     artists: [],
   };
 
-  constructor(
-    private readonly trackService: TracksService,
-    private readonly albumService: AlbumsService,
-    private readonly artistService: ArtistsService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async findAll() {
     const foundTracks = await Promise.all(
-      this.favorite.tracks.map((el) => this.trackService.findOne(el)),
+      this.favorite.tracks.map((el) =>
+        this.prisma.track.findUnique({ where: { id: el } }),
+      ),
     );
     const foundAlbums = await Promise.all(
-      this.favorite.albums.map((el) => this.albumService.findOne(el)),
+      this.favorite.albums.map((el) =>
+        this.prisma.album.findUnique({ where: { id: el } }),
+      ),
     );
     const foundArtists = await Promise.all(
-      this.favorite.artists.map((el) => this.artistService.findOne(el)),
+      this.favorite.artists.map((el) =>
+        this.prisma.artist.findUnique({ where: { id: el } }),
+      ),
     );
 
     return {
-      tracks: foundTracks.filter((el) => el !== undefined),
-      albums: foundAlbums.filter((el) => el !== undefined),
-      artists: foundArtists.filter((el) => el !== undefined),
+      tracks: foundTracks.filter((el) => el !== null || undefined),
+      albums: foundAlbums.filter((el) => el !== null || undefined),
+      artists: foundArtists.filter((el) => el !== null || undefined),
     };
   }
 
-  async createFavTrack(id: string): Promise<void> {
-    const track = await this.trackService.findOne(id);
-    if (!track) throw new UnprocessableEntityException("This id doesn't exist");
+  async createFavTrack(id: string): Promise<boolean> {
+    const track = await this.prisma.track.findUnique({ where: { id } });
+    if (!track) return false;
     this.favorite.tracks.push(id);
-    return;
+    return true;
   }
 
-  async createFavAlbum(id: string): Promise<void> {
-    const album = await this.albumService.findOne(id);
-    if (!album) throw new UnprocessableEntityException("This id doesn't exist");
+  async createFavAlbum(id: string): Promise<boolean> {
+    const album = await this.prisma.album.findUnique({ where: { id } });
+    if (!album) return false;
     this.favorite.albums.push(id);
-    return;
+    return true;
   }
 
-  async createFavArtist(id: string): Promise<void> {
-    const artist = await this.artistService.findOne(id);
-    if (!artist)
-      throw new UnprocessableEntityException("This id doesn't exist");
+  async createFavArtist(id: string): Promise<boolean> {
+    const artist = await this.prisma.artist.findUnique({ where: { id } });
+    if (!artist) return false;
     this.favorite.artists.push(id);
-    return;
+    return true;
   }
 
-  async removeTrack(id: string): Promise<void> {
+  async removeTrack(id: string): Promise<boolean> {
     const track = this.favorite.tracks.find((el) => el === id);
-    if (!track) throw new NotFoundException();
+    if (!track) return false;
     this.favorite.tracks = this.favorite.tracks.filter((el) => el !== id);
-    return;
+    return true;
   }
 
-  async removeAlbum(id: string): Promise<void> {
+  async removeAlbum(id: string): Promise<boolean> {
     const album = this.favorite.albums.find((el) => el === id);
-    if (!album) throw new NotFoundException();
+    if (!album) return false;
     this.favorite.albums = this.favorite.albums.filter((el) => el !== id);
-    return;
+    return true;
   }
 
-  async removeArtist(id: string): Promise<void> {
+  async removeArtist(id: string): Promise<boolean> {
     const artist = this.favorite.artists.find((el) => el === id);
-    if (!artist) throw new NotFoundException();
+    if (!artist) return false;
     this.favorite.artists = this.favorite.artists.filter((el) => el !== id);
-    return;
+    return true;
   }
 }
