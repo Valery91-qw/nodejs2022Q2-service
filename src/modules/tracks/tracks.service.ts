@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { ITrack } from './model/track.model';
-import { Track } from './helpers/Track';
+import { Track } from './entities/Track';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()

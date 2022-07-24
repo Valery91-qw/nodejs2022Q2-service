@@ -7,13 +7,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Artist {
-  id    String     @default(uuid()) @id
-  name String
-  grammy Boolean
-  tracks Track[]
-}
-
 model User {
   id    String      @default(uuid()) @id
   login String
@@ -23,11 +16,29 @@ model User {
   version Int
 }
 
+model Artist {
+  id    String     @default(uuid()) @id
+  name String
+  grammy Boolean
+  tracks Track[]
+  albums Album[]
+}
+
+model Album {
+  id    String     @default(uuid()) @id
+  name String
+  year Int
+  artist Artist?   @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  artistId String?
+  tracks Track[]
+}
+
 model Track {
   id    String      @default(uuid()) @id
   name String
   artist Artist?    @relation(fields: [artistId], references: [id], onDelete: SetNull)
   artistId String?
+  album Album?      @relation(fields: [albumId], references: [id], onDelete: SetNull)
   albumId String?
   duration Int
 }

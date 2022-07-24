@@ -15,8 +15,9 @@ import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { IAlbum } from './model/album.model';
+import constants from './constants/constants';
 
-@Controller('album')
+@Controller(constants.albumURL)
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
@@ -33,7 +34,7 @@ export class AlbumsController {
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<IAlbum> {
     const album = await this.albumsService.findOne(id);
-    if (!album) throw new NotFoundException(`Album with this id not found`);
+    if (!album) throw new NotFoundException(constants.albumNotFoundMessage);
     else return album;
   }
 
@@ -43,7 +44,7 @@ export class AlbumsController {
     @Body() updateAlbumDto: UpdateAlbumDto,
   ): Promise<IAlbum> {
     const album = await this.albumsService.update(id, updateAlbumDto);
-    if (!album) throw new NotFoundException(`Album with this id not found`);
+    if (!album) throw new NotFoundException(constants.albumNotFoundMessage);
     else return album;
   }
 
@@ -51,7 +52,7 @@ export class AlbumsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     const album = await this.albumsService.remove(id);
-    if (!album) throw new NotFoundException(`Album with this id not found`);
+    if (!album) throw new NotFoundException(constants.albumNotFoundMessage);
     else return;
   }
 }

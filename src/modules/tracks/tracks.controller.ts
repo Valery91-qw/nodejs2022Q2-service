@@ -15,8 +15,9 @@ import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { ITrack } from './model/track.model';
+import constants from './constants/constants';
 
-@Controller('track')
+@Controller(constants.trackURL)
 export class TracksController {
   constructor(private readonly tracksService: TracksService) {}
 
@@ -33,7 +34,7 @@ export class TracksController {
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<ITrack> {
     const track = await this.tracksService.findOne(id);
-    if (!track) throw new NotFoundException(`user with this id not found`);
+    if (!track) throw new NotFoundException(constants.trackNotFoundError);
     return track;
   }
 
@@ -43,7 +44,7 @@ export class TracksController {
     @Body() updateTrackDto: UpdateTrackDto,
   ): Promise<ITrack> {
     const track = await this.tracksService.update(id, updateTrackDto);
-    if (!track) throw new NotFoundException(`user with this id not found`);
+    if (!track) throw new NotFoundException(constants.trackNotFoundError);
     return track;
   }
 
@@ -51,7 +52,7 @@ export class TracksController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     const track = await this.tracksService.remove(id);
-    if (!track) throw new NotFoundException(`user with this id not found`);
+    if (!track) throw new NotFoundException(constants.trackNotFoundError);
     return;
   }
 }
