@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { IUser } from '../models/user.model';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
@@ -13,8 +12,6 @@ export class User implements IUser {
   constructor(login: string, password: string) {
     this.login = login;
     this.password = password;
-    this.id = randomUUID();
-    this.version = 1;
     this.createdAt = Date.now();
     this.updatedAt = this.createdAt;
   }

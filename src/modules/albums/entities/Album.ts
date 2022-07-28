@@ -1,5 +1,4 @@
 import { IAlbum } from '../model/album.model';
-import { randomUUID } from 'crypto';
 import { UpdateAlbumDto } from '../dto/update-album.dto';
 
 export class Album implements IAlbum {
@@ -9,7 +8,6 @@ export class Album implements IAlbum {
   artistId: string | null;
 
   constructor(name: string, year: number, artistId?: string) {
-    this.id = randomUUID();
     this.name = name;
     this.year = year;
     this.artistId = artistId || null;

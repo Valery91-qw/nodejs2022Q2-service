@@ -7,13 +7,20 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Favorite {
+  id    String      @default(uuid()) @id
+  artists String[]
+  albums String[]
+  tracks String[]
+}
+
 model User {
   id    String      @default(uuid()) @id
   login String
   password String
   updatedAt Int
   createdAt Int
-  version Int
+  version Int       @default(1)
 }
 
 model Artist {
