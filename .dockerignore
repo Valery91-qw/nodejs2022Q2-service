@@ -1,6 +1,6 @@
-docker/nest/Dockerfile
+/docker/app/Dockerfile
+/docker/db/Dockerfile
 .dockerignore
 node_modules
 npm-debug.log
 dist
-.env

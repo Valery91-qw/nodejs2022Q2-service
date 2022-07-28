@@ -6,13 +6,15 @@ services:
       context: .
       dockerfile: ./docker/app/Dockerfile
     env_file:
-      - .env.example
+      - .env
     ports:
-      - "4000:4000"
+      - ${PORT}:${PORT}
+    networks:
+      - my-network
     depends_on:
-      - db
+      - postgres
     restart: always
-  db:
+  postgres:
     container_name: postgres
     build:
       context: .
@@ -20,7 +22,15 @@ services:
     environment:
       PG_DATA: /var/lib/postgresql/data
     env_file:
-      - .env.example
+      - .env
     ports:
-      - "5432:5432"
+      - ${PG_PORT}:${PG_PORT}
+    networks:
+      - my-network
     restart: always
+networks:
+  my-network:
+    name: my-network
+    driver: bridge
+volumes:
+  PG_DATA:
