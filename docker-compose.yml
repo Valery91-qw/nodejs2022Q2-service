@@ -9,10 +9,12 @@ services:
       - .env
     ports:
       - ${PORT}:${PORT}
+    networks:
+      - my-network
     depends_on:
-      - db
+      - postgres
     restart: always
-  db:
+  postgres:
     container_name: postgres
     build:
       context: .
@@ -23,4 +25,12 @@ services:
       - .env
     ports:
       - ${PG_PORT}:${PG_PORT}
+    networks:
+      - my-network
     restart: always
+networks:
+  my-network:
+    name: my-network
+    driver: bridge
+volumes:
+  PG_DATA:
