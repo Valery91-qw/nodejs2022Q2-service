@@ -23,7 +23,9 @@ services:
       context: .
       dockerfile: ./docker/db/Dockerfile
     environment:
-      PG_DATA: /var/lib/postgresql/data
+      pgdata: /var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     env_file:
       - .env
     ports:
@@ -36,4 +38,4 @@ networks:
     name: my-network
     driver: bridge
 volumes:
-  PG_DATA:
+  pgdata:
