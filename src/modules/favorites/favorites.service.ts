@@ -3,15 +3,6 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class FavoritesService {
-  favorite: {
-    tracks: Array<string>;
-    albums: Array<string>;
-    artists: Array<string>;
-  } = {
-    tracks: [],
-    albums: [],
-    artists: [],
-  };
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
