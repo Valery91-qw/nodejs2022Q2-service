@@ -4,7 +4,7 @@ WORKDIR /backend
 
 COPY package*.json ./
 
-COPY prisma prisma
+COPY prisma ./prisma/
 
 COPY .env ./
 
