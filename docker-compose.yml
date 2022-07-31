@@ -9,11 +9,14 @@ services:
       - .env
     ports:
       - ${PORT}:${PORT}
+    volumes:
+      - .:/backend
+      - /backend/node_modules
     networks:
       - my-network
     depends_on:
       - postgres
-    restart: always
+    restart: unless-stopped
   postgres:
     container_name: postgres
     build:
@@ -27,7 +30,7 @@ services:
       - ${PG_PORT}:${PG_PORT}
     networks:
       - my-network
-    restart: always
+    restart: unless-stopped
 networks:
   my-network:
     name: my-network
