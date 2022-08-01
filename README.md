@@ -17,6 +17,10 @@ git clone {repository URL}
 npm install
 ```
 
+## Set environment variables
+
+add your `.env` file or use exsisting `.env` file (jast remove .example in the name)
+
 ## Running application
 
 ```
