@@ -4,6 +4,7 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker - [Download & install Docker](https://docs.docker.com/get-docker/).
 
 ## Downloading
 
@@ -20,6 +21,10 @@ npm install
 ## Set environment variables
 
 add your `.env` file or use exsisting `.env` file (jast remove .example in the name)
+
+## Running an application inside docker
+
+start docker and run command `docker compose up` in terminal
 
 ## Running application
 
