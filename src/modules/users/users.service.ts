@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserType } from './models/user.model';
 import { User } from './entities/User';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuthDto } from '../auth/dto/auth.dto';
 
 @Injectable()
 export class UsersService {
@@ -60,5 +61,11 @@ export class UsersService {
       where: { id },
     });
     return User.getUserInfo(deletedUser);
+  }
+
+  async findByLoginAndPass(authDto: AuthDto) {
+    return await this.prisma.user.findFirst({
+      where: authDto,
+    });
   }
 }

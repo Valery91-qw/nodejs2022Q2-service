@@ -1,24 +1,27 @@
 import { Controller, Post, Body, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { AuthDto } from './dto/auth.dto';
+import jwtAuthMetadata from '../../guards/jwt-auth.metadata';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/signup')
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  async signup(@Body() createAuthDto: any) {
+    return await this.authService.signup(createAuthDto);
   }
 
+  @jwtAuthMetadata.Public()
   @Post('/login')
-  login(@Body() userDto: CreateUserDto) {
-    return this.authService.login(userDto);
+  async login(@Body() authDto: AuthDto) {
+    const jwt = await this.authService.login(authDto);
+    console.log(jwt);
+    return jwt;
   }
 
   @Post('/refresh')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.authService.findOne(+id);
   }
 }
