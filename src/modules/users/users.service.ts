@@ -1,17 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ResponseUserType } from './models/user.model';
+import { IUser, ResponseUserType } from './models/user.model';
 import { User } from './entities/User';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from '../auth/dto/auth.dto';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   public async create(createUserDto: CreateUserDto): Promise<ResponseUserType> {
-    const newUser = new User(createUserDto.login, createUserDto.password);
+    const password = await hash(
+      createUserDto.password,
+      +process.env.CRYPT_SALT,
+    );
+    const newUser = new User(createUserDto.login, password);
     const user = await this.prisma.user.create({
       data: newUser,
     });
@@ -40,7 +45,7 @@ export class UsersService {
     });
     if (!currentUser) return currentUser;
     else {
-      const updatedUser = User.updatePassword(currentUser, updateUserDto);
+      const updatedUser = await User.updatePassword(currentUser, updateUserDto);
       if (!updatedUser) return updatedUser;
       else {
         const usr = await this.prisma.user.update({
@@ -63,9 +68,11 @@ export class UsersService {
     return User.getUserInfo(deletedUser);
   }
 
-  async findByLoginAndPass(authDto: AuthDto) {
+  async findByLoginAndPass(authDto: AuthDto): Promise<IUser> {
     return await this.prisma.user.findFirst({
-      where: authDto,
+      where: {
+        login: authDto.login,
+      },
     });
   }
 }

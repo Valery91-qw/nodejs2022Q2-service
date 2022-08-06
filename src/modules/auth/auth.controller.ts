@@ -1,4 +1,10 @@
-import { Controller, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  ForbiddenException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import jwtAuthMetadata from '../../guards/jwt-auth.metadata';
@@ -7,9 +13,10 @@ import jwtAuthMetadata from '../../guards/jwt-auth.metadata';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @jwtAuthMetadata.Public()
   @Post('/signup')
-  async signup(@Body() createAuthDto: any) {
-    return await this.authService.signup(createAuthDto);
+  async signup(@Body() authDto: AuthDto) {
+    return await this.authService.signup(authDto);
   }
 
   @jwtAuthMetadata.Public()
@@ -17,11 +24,12 @@ export class AuthController {
   async login(@Body() authDto: AuthDto) {
     const jwt = await this.authService.login(authDto);
     console.log(jwt);
+    if (!jwt) throw new ForbiddenException('Incorrect data');
     return jwt;
   }
 
   @Post('/refresh')
   async findOne(@Param('id') id: string) {
-    return await this.authService.findOne(+id);
+    return;
   }
 }

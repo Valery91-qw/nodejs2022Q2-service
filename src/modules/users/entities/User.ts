@@ -1,5 +1,6 @@
 import { IUser } from '../models/user.model';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { compare, hash } from 'bcrypt';
 
 export class User implements IUser {
   id: string;
@@ -16,13 +17,20 @@ export class User implements IUser {
     this.updatedAt = this.createdAt;
   }
 
-  static updatePassword(
+  static async updatePassword(
     user: IUser,
     updateUserDto: UpdateUserDto,
-  ): IUser | boolean {
-    if (user.password !== updateUserDto.oldPassword) return false;
+  ): Promise<IUser | boolean> {
+    const isPasswordCorrect = await compare(
+      updateUserDto.oldPassword,
+      user.password,
+    );
+    if (!isPasswordCorrect) return false;
     else {
-      user.password = updateUserDto.newPassword;
+      user.password = await hash(
+        updateUserDto.newPassword,
+        +process.env.CRYPT_SALT,
+      );
       user.version++;
       user.updatedAt = Date.now();
       return user;

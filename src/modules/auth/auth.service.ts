@@ -10,19 +10,18 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signup(createAuthDto: any) {
-    return 'This action adds a new auth';
+  async signup(authDto: AuthDto) {
+    await this.usersService.create(authDto);
+    return;
   }
 
   async login(authDto: AuthDto) {
-    const payload = { login: authDto.login, password: authDto.password };
     const user = await this.usersService.findByLoginAndPass(authDto);
+    if (!user) return user;
+    const payload = { userId: user.id, login: user.login };
     return {
       accessToken: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(payload, { expiresIn: '24h' }),
     };
-  }
-
-  async findOne(id: number) {
-    return `This action returns a #${id} auth`;
   }
 }
