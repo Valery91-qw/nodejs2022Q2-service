@@ -2,12 +2,16 @@ import {
   Controller,
   Post,
   Body,
-  Param,
   ForbiddenException,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
-import jwtAuthMetadata from '../../guards/jwt-auth.metadata';
+import jwtAuthMetadata from '../../guards/jwt/jwt-auth.metadata';
+import { JwtRefreshGuard } from '../../guards/jwt-refresh/jwt-refresh.guard';
+import { RefreshDto } from './dto/refresh.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,15 +25,18 @@ export class AuthController {
 
   @jwtAuthMetadata.Public()
   @Post('/login')
+  @HttpCode(HttpStatus.OK)
   async login(@Body() authDto: AuthDto) {
     const jwt = await this.authService.login(authDto);
-    console.log(jwt);
     if (!jwt) throw new ForbiddenException('Incorrect data');
     return jwt;
   }
 
+  @jwtAuthMetadata.Public()
+  @UseGuards(JwtRefreshGuard)
   @Post('/refresh')
-  async findOne(@Param('id') id: string) {
-    return;
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Body() refreshDto: RefreshDto) {
+    return await this.authService.refresh(refreshDto);
   }
 }

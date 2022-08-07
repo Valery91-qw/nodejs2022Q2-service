@@ -189,6 +189,35 @@ paths:
           description: Bad request
         409:
           description: Conflict. Login already exists
+  /auth/refresh:
+    post:
+      tags:
+        - Refresh token
+      security: [ ]
+      summary: refresh
+      description: refresh tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: example
+              properties:
+                refreshToken:
+                  type: string
+                  minLength: 3
+                  maxLength: 255
+                  description: jwt refresh token
+              required:
+                - refreshToken
+      responses:
+        200:
+          description: Successful signup
+        401:
+          description: Bad request No refresh token
+        403:
+          description: Refresh token is invalid
   /user:
     get:
       tags:

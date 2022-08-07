@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { AuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
+import { RefreshDto } from './dto/refresh.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async signup(authDto: AuthDto) {
@@ -23,5 +26,20 @@ export class AuthService {
       accessToken: this.jwtService.sign(payload),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '24h' }),
     };
+  }
+
+  async refresh(refreshDto: RefreshDto) {
+    const userData = this.jwtService.decode(refreshDto.refreshToken);
+    if (typeof userData === 'object') {
+      const user = await this.prisma.user.findFirst({
+        where: { login: userData.login },
+        select: {
+          login: true,
+          password: true,
+        },
+      });
+      return await this.login(user);
+    }
+    return;
   }
 }

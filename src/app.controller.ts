@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import jwtAuthMetadata from './guards/jwt-auth.metadata';
+import jwtAuthMetadata from './guards/jwt/jwt-auth.metadata';
 
 @Controller()
 export class AppController {
