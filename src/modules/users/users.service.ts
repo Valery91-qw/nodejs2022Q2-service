@@ -6,7 +6,7 @@ import { User } from './entities/User';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from '../auth/dto/auth.dto';
 import { hash } from 'bcrypt';
-
+// TODO: create the correct dependency in the user schema as a 'favorite' relationship and implement it in the create method!!!!
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
