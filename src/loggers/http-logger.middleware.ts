@@ -12,20 +12,16 @@ export class HttpLoggerMiddleware implements NestMiddleware {
     response.on('finish', () => {
       const { statusCode } = response;
 
+      const message = `Status: ${statusCode}, URL: ${originalUrl}, Method: ${method}, Query: ${Object.values(
+        params,
+      )}, Body: ${JSON.stringify(body)}`;
+
       if (statusCode < 400) {
-        this.logger.log(
-          `Status: ${statusCode} ,URL: ${originalUrl}, Method: ${method}, Query: ${Object.values(
-            params,
-          )}, Body: ${JSON.stringify(body)}`,
-        );
+        this.logger.log(message);
       }
 
       if (statusCode >= 400) {
-        this.logger.error(
-          `Status: ${statusCode} ,URL: ${originalUrl}, Method: ${method}, Query: ${Object.values(
-            params,
-          )}, Body: ${JSON.stringify(body)}`,
-        );
+        this.logger.error(message);
       }
     });
     next();
