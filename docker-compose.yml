@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  backend:
+    container_name: nest-js
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    env_file:
+      - .env
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - .:/backend
+      - /backend/node_modules
+    networks:
+      - my-network
+    depends_on:
+      - postgres
+    restart: unless-stopped
+  postgres:
+    container_name: postgres
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
+    environment:
+      pgdata: /var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - ${PG_PORT}:${PG_PORT}
+    networks:
+      - my-network
+    restart: unless-stopped
+networks:
+  my-network:
+    name: my-network
+    driver: bridge
+volumes:
+  pgdata:
